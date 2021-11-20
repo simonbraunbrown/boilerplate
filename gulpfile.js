@@ -1,6 +1,7 @@
 var gulp = require('gulp'),
     sass = require('gulp-sass')(require('sass')),
     sourcemaps = require('gulp-sourcemaps'),
+    autoprefixer = require('gulp-autoprefixer'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     del = require('del'),
@@ -36,6 +37,7 @@ const paths = {
     return gulp.src(paths.styles.main)
     .pipe(sourcemaps.init())
     .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+    .pipe(autoprefixer())
     .pipe(sourcemaps.write())
     .pipe(rename({basename: 'style', suffix: '.min'}))
     .pipe(gulp.dest(paths.styles.dest))
