@@ -1,0 +1,14 @@
+@use './lib/variables';
+
+.headline-with-text {
+    h1 {
+        font-family: sans-serif;
+        font-weight: bold;
+        font-size: 200px;
+        color: variables.$main-color;
+    }
+    p {
+        font-size: 50px;
+        color: variables.$main-color;
+    }
+}
