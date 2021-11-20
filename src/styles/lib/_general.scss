@@ -1,0 +1,17 @@
+@use './lib/variables';
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+section {
+    min-height: 300px;
+    border-bottom: 2px solid variables.$main-color ;
+}
+
+h1 {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 100px;
+}
