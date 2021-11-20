@@ -27,7 +27,7 @@ const paths = {
   function scripts() {
     return gulp.src(paths.scripts.src, { sourcemaps: true })
       .pipe(uglify())
-      .pipe(concat('index.min.js'))
+      .pipe(concat('main.min.js'))
       .pipe(gulp.dest(paths.scripts.dest))
       .pipe(notify({ message: 'Scripts task complete' }));
   }
