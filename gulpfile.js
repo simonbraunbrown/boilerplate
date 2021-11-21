@@ -2,6 +2,7 @@ var gulp = require('gulp'),
     sass = require('gulp-sass')(require('sass')),
     sourcemaps = require('gulp-sourcemaps'),
     autoprefixer = require('gulp-autoprefixer'),
+    rollup = require('gulp-rollup'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     del = require('del'),
@@ -13,22 +14,34 @@ const server = browserSync.create();
 const clean = () => del(['dist/*']);
 
 const paths = {
+    html: {
+      src: 'src/index.html',
+      dest: 'dist/'
+    },
     styles: {
         src: 'src/styles/**/**.scss',
         main: 'src/styles/main.scss',
-        dest: 'dist/styles/'
+        dest: 'dist/'
     },
     scripts: {
       src: 'src/scripts/**/**.js',
-      main: 'src/scripts/index.js',
-      dest: 'dist/scripts/'
+      main: 'src/scripts/main.js',
+      dest: 'dist/'
     }
   };
 
   function scripts() {
     return gulp.src(paths.scripts.src, { sourcemaps: true })
+      .pipe(sourcemaps.init())
+      .pipe(rollup({
+        input: paths.scripts.main,
+        output: {
+          format: 'umd',
+        }
+      }))
       .pipe(uglify())
       .pipe(concat('main.min.js'))
+      .pipe(sourcemaps.write())
       .pipe(gulp.dest(paths.scripts.dest))
       .pipe(notify({ message: 'Scripts task complete' }));
   }
@@ -45,6 +58,11 @@ const paths = {
     .pipe(notify({ message: 'Styles task complete' }));
   }
 
+  function transferHTML() {
+    return gulp.src(paths.html.src)
+      .pipe(gulp.dest(paths.html.dest));
+  }
+
   function reload(done) {
     server.reload();
     done();
@@ -53,7 +71,7 @@ const paths = {
   function serve(done) {
     server.init({
       server: {
-        baseDir: './'
+        baseDir: './dist/'
       }
     });
     done();
@@ -62,6 +80,7 @@ const paths = {
   function watch(done) {
     gulp.watch(paths.scripts.src, gulp.series(scripts, reload));
     gulp.watch(paths.styles.src, gulp.series(styles, reload));
+    gulp.watch(paths.html.src, gulp.series(transferHTML, reload));
   }
-gulp.task('dev', gulp.series(clean, scripts, styles, serve, watch));
+gulp.task('dev', gulp.series(clean, transferHTML, scripts, styles, serve, watch));
 
